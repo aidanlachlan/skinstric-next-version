@@ -104,30 +104,51 @@ const Demographics = () => {
         <div className="w-full flex lg:flex-row flex-col gap-4">
           {/* LEFT COLUMN */}
           <div className="lg:flex-[3] flex flex-col gap-[8px]">
-            {["race", "age", "sex"].map((category) => (
-              <div
-                key={category}
-                className={`max-lg:flex-row max-lg:justify-between flex flex-col h-[20%] border-t border-black p-2 font-semi-bold cursor-pointer ${
-                  selectedCategory === category
-                    ? "bg-black text-white"
-                    : "bg-gray-100 hover:bg-gray-300"
-                }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                <span className="mb-8 font-bold uppercase">
-                  {confirmedOptions?.[category] ||
-                    getSelectedData()[0]?.label?.toUpperCase() ||
-                    "N/A"}
-                </span>
-                <span className="font-bold">{category.toUpperCase()}</span>
-              </div>
-            ))}
+            <div
+              className={`max-lg:flex-row max-lg:justify-between flex flex-col h-[20%] border-t border-black p-2 font-semi-bold cursor-pointer ${
+                selectedCategory === "race"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 hover:bg-gray-300"
+              }`}
+              onClick={() => setSelectedCategory("race")}
+            >
+              <span className="mb-8 font-bold uppercase">
+                {confirmedOptions?.race || raceData[0]?.label.toUpperCase() || "N/A"}
+              </span>
+              <span className="font-bold">RACE</span>
+            </div>
+            <div
+              className={`max-lg:flex-row max-lg:justify-between flex flex-col h-[20%] border-t border-black p-2 font-semi-bold cursor-pointer ${
+                selectedCategory === "age"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 hover:bg-gray-300"
+              }`}
+              onClick={() => setSelectedCategory("age")}
+            >
+              <span className="mb-8 font-bold">
+                {confirmedOptions?.age || ageData[0]?.label || "N/A"}
+              </span>
+              <span className="font-bold">AGE</span>
+            </div>
+            <div
+              className={`max-lg:flex-row max-lg:justify-between flex flex-col h-[20%] border-t border-black p-2 font-semi-bold cursor-pointer ${
+                selectedCategory === "sex"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 hover:bg-gray-300"
+              }`}
+              onClick={() => setSelectedCategory("sex")}
+            >
+              <span className="mb-8 font-bold uppercase">
+                {confirmedOptions?.sex || sexData[0]?.label.toUpperCase() || "N/A"}
+              </span>
+              <span className="font-bold">SEX</span>
+            </div>
           </div>
 
           {/* MIDDLE COLUMN */}
           <div className="lg:flex-[12] p-4 bg-gray-100 border-t border-black relative flex flex-col items-center justify-center">
             <div className="text-[32px] font-semi-bold mb-8 w-[100%]">
-              {(confirmedItem || defaultItem)?.label || "No data"}
+              {(confirmedItem || defaultItem)?.label.charAt(0).toUpperCase() + (confirmedItem || defaultItem)?.label.slice(1) || "No data"}
             </div>
 
             <div className="w-96 h-96 max-lg:w-64 max-lg:h-64 max-sm:w-48 max-sm:h-48">
@@ -236,5 +257,6 @@ const Demographics = () => {
 };
 
 export default Demographics;
+
 
 
