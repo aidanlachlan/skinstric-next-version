@@ -1,0 +1,37 @@
+@keyframes rotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(405deg);
+  }
+}
+
+.spin-fast {
+  animation: rotate 15s linear infinite;
+}
+
+.spin {
+  animation: rotate 30s linear infinite;
+}
+
+.spin-slow {
+  animation: rotate 60s linear infinite;
+}
+
+.spin-slower {
+  animation: rotate 120s linear infinite;
+}
+
+.spin-slowest {
+  animation: rotate 240s linear infinite;
+}
+
+.spin-slow,
+.spin-slower,
+.spin-slowest {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+ } 
