@@ -8,33 +8,36 @@ const Camera = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [photo, setPhoto] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCameraReady, setIsCameraReady] = useState(false);
   const router = useRouter();
 
   const handleProceed = async () => {
     if (!photo) return;
 
     const base64Image = photo.split(",")[1];
+    setIsLoading(true);
     try {
-      const response = await fetch(
-        "https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseTwo",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ image: base64Image }),
-        }
-      );
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64Image, mediaType: "image/png" }),
+      });
 
       const result = await response.json();
       if (result.success) {
         sessionStorage.setItem("demographicData", JSON.stringify(result.data));
-        router.push("/demographics");
+        setTimeout(() => {
+          setIsLoading(false);
+          router.push("/select");
+        }, 1000);
       } else {
         console.warn("API responded with error:", result);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Failed to upload image:", error);
+      setIsLoading(false);
     }
   };
 
@@ -80,6 +83,10 @@ const Camera = () => {
     }
   };
 
+  const showSetupOverlay = !isCameraReady && !photo;
+  const showAnalysisOverlay = isLoading;
+  const overlayText = showAnalysisOverlay ? "PREPARING YOUR\nANALYSIS..." : "SETTING UP CAMERA...";
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
       <canvas ref={canvasRef} style={{ display: "none" }} />
@@ -89,6 +96,7 @@ const Camera = () => {
         autoPlay
         playsInline
         muted
+        onCanPlay={() => setIsCameraReady(true)}
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
       />
 
@@ -115,7 +123,7 @@ const Camera = () => {
         </div>
       )}
 
-      {!photo && (
+      {!photo && !showSetupOverlay && !showAnalysisOverlay && (
         <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-10 py-8 flex items-center justify-end lg:justify-center px-8">
           <span className="text-white">TAKE PICTURE</span>
           <img
@@ -170,6 +178,23 @@ const Camera = () => {
           </div>
         )}
       </footer>
+      {(showSetupOverlay || showAnalysisOverlay) && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white-custom">
+          <div className="relative w-[300px] h-[300px]">
+            <div className="absolute w-[400px] h-[400px] border border-dotted border-[2px] border-[#E5E7EB] rotate-45 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 spin-fast" />
+            <div className="absolute w-[350px] h-[350px] border border-dotted border-[2px] border-[#D1D5DB] rotate-45 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 spin" />
+            <div className="absolute w-[300px] h-[300px] border border-dotted border-[2px] border-[#A0A4AB] rotate-45 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 spin-slow" />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[60%] text-center">
+              <img
+                src="/assets/skinstric-camera-icon.png"
+                alt="Icon"
+                className="w-[60px] h-[60px] mx-auto mb-2"
+              />
+              <div className="font-bold text-lg whitespace-pre-line">{overlayText}</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

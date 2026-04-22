@@ -18,14 +18,12 @@ const Analysis = () => {
 
   const handleCameraAllow = async () => {
     setShowCameraModal(false);
+    sessionStorage.removeItem("demographicData");
     setIsCameraLoading(true);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       stream.getTracks().forEach((track) => track.stop());
-      setTimeout(() => {
-        setIsCameraLoading(false);
-        router.push("/camera");
-      }, 1000);
+      router.push("/camera");
     } catch (error) {
       console.error("Camera access failed:", error);
       setIsCameraLoading(false);
@@ -39,6 +37,7 @@ const Analysis = () => {
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
+    sessionStorage.removeItem("demographicData");
 
     const reader = new FileReader();
     reader.onloadend = async () => {
@@ -46,14 +45,11 @@ const Analysis = () => {
 
       setIsLoading(true);
       try {
-        const response = await fetch(
-          "https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseTwo",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: base64Image }),
-          }
-        );
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: base64Image }),
+        });
 
         const result = await response.json();
         if (result.success) {
