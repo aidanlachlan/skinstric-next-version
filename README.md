@@ -12,11 +12,11 @@
 
 ## About
 
-Skinstric is a web application that uses AI to analyze your skin from a photo and generate a personalized skincare profile. The experience guides users through a short questionnaire, captures or uploads a face photo, and then presents AI-predicted demographic data — including estimated race, age range, and sex — with confidence scores that the user can review and correct.
+Skinstric is a web application that uses AI to analyze your skin from a photo and generate a personalized skincare profile. The experience guides users through a short questionnaire, captures or uploads a photo, and then presents AI-predicted demographic data, including estimated race, age range, and sex, with confidence scores that the user can review and correct.
 
 The project was bootstrapped from `create-next-app` and built on top of that foundation. The frontend is a sequential wizard-style flow; all AI inference runs on a hosted Google Cloud Functions backend, keeping the Next.js app entirely client-side.
 
-The design language is minimal and editorial — a custom variable font (Roobert TRIAL), rotating dotted-diamond animations, and a black-and-white palette give the experience a considered, premium feel.
+The design language is minimal and editorial. A custom variable font (Roobert TRIAL), rotating dotted-diamond animations, and a black-and-white palette give the experience a considered, premium feel.
 
 ---
 
