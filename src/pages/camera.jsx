@@ -28,7 +28,6 @@ const Camera = () => {
       if (result.success) {
         sessionStorage.setItem("demographicData", JSON.stringify(result.data));
         setTimeout(() => {
-          setIsLoading(false);
           router.push("/select");
         }, 1000);
       } else {
