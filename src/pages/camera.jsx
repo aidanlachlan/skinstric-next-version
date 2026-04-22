@@ -84,8 +84,22 @@ const Camera = () => {
   };
 
   const showSetupOverlay = !isCameraReady && !photo;
-  const showAnalysisOverlay = isLoading;
-  const overlayText = showAnalysisOverlay ? "PREPARING YOUR\nANALYSIS..." : "SETTING UP CAMERA...";
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-white-custom">
+        <div className="relative w-[300px] h-[300px]">
+          <div className="absolute w-[400px] h-[400px] border border-dotted border-[2px] border-[#E5E7EB] rotate-45 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 spin-fast" />
+          <div className="absolute w-[350px] h-[350px] border border-dotted border-[2px] border-[#D1D5DB] rotate-45 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 spin" />
+          <div className="absolute w-[300px] h-[300px] border border-dotted border-[2px] border-[#A0A4AB] rotate-45 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 spin-slow" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-[60%] text-center">
+            <img src="/assets/skinstric-camera-icon.png" alt="Icon" className="w-[60px] h-[60px] mx-auto mb-2" />
+            <div className="font-bold text-lg whitespace-pre-line">{"PREPARING YOUR\nANALYSIS..."}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
@@ -123,7 +137,7 @@ const Camera = () => {
         </div>
       )}
 
-      {!photo && !showSetupOverlay && !showAnalysisOverlay && (
+      {!photo && !showSetupOverlay && (
         <div className="absolute top-1/2 right-0 transform -translate-y-1/2 z-10 py-8 flex items-center justify-end lg:justify-center px-8">
           <span className="text-white">TAKE PICTURE</span>
           <img
@@ -178,7 +192,7 @@ const Camera = () => {
           </div>
         )}
       </footer>
-      {(showSetupOverlay || showAnalysisOverlay) && (
+      {showSetupOverlay && (
         <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white-custom">
           <div className="relative w-[300px] h-[300px]">
             <div className="absolute w-[400px] h-[400px] border border-dotted border-[2px] border-[#E5E7EB] rotate-45 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 spin-fast" />
@@ -190,7 +204,7 @@ const Camera = () => {
                 alt="Icon"
                 className="w-[60px] h-[60px] mx-auto mb-2"
               />
-              <div className="font-bold text-lg whitespace-pre-line">{overlayText}</div>
+              <div className="font-bold text-lg">SETTING UP CAMERA...</div>
             </div>
           </div>
         </div>
