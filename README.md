@@ -137,7 +137,7 @@ Cross-page state travels via browser storage (`localStorage` for the user profil
 
 ## Live Demo
 
-No deployed URL was found in the project configuration.
+https://skinstric-ai-eta.vercel.app/
 
 ---
 
