@@ -1,40 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Skinstric
+
+> Sophisticated skincare, powered by A.I.
+
+![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19.0.0-61DAFB?style=flat-square&logo=react)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.17-38BDF8?style=flat-square&logo=tailwindcss)
+
+![Hero](./screenshots/hero.png)
+
+---
+
+## About
+
+Skinstric is a web application that uses AI to analyze your skin from a photo and generate a personalized skincare profile. The experience guides users through a short questionnaire, captures or uploads a face photo, and then presents AI-predicted demographic data — including estimated race, age range, and sex — with confidence scores that the user can review and correct.
+
+The project was bootstrapped from `create-next-app` and built on top of that foundation. The frontend is a sequential wizard-style flow; all AI inference runs on a hosted Google Cloud Functions backend, keeping the Next.js app entirely client-side.
+
+The design language is minimal and editorial — a custom variable font (Roobert TRIAL), rotating dotted-diamond animations, and a black-and-white palette give the experience a considered, premium feel.
+
+---
+
+## Features
+
+![Analysis](./screenshots/analysis.png)
+
+- **Multi-step onboarding flow** — collects user name and location before analysis begins
+- **Dual photo input** — take a live photo via webcam or upload from gallery
+- **Camera permission gating** — verifies camera access before navigating to the capture screen
+- **AI demographic analysis** — sends base64-encoded image to a cloud API and receives predicted race, age, and gender with percentage confidence scores
+- **Interactive demographics review** — users can override any AI prediction before confirming
+- **Animated UI** — layered rotating dotted-diamond spinners at varying speeds throughout the flow
+- **Responsive layout** — separate desktop (≥1280px) and mobile layouts on the landing page; fluid adjustments on inner pages
+
+---
+
+## Tech Stack
+
+| Category   | Technology                        |
+|------------|-----------------------------------|
+| Framework  | Next.js 15.3.3 (Pages Router)     |
+| UI Library | React 19.0.0                      |
+| Styling    | Tailwind CSS 3.4.17               |
+| Font       | Roobert TRIAL (self-hosted woff2) |
+| Backend    | Google Cloud Functions (external) |
+| Linting    | ESLint 9.28.0 + eslint-config-next|
+
+---
+
+## Project Structure
+
+```
+my-next-app/
+├── public/
+│   └── assets/              # Icons, button images, font files
+│       └── fonts/
+│           └── RoobertTRIALVF.woff2
+├── src/
+│   ├── components/
+│   │   ├── Header.jsx       # Logo + current section label, links home
+│   │   ├── LeftButton.jsx   # Back navigation button (image + label)
+│   │   └── RightButton.jsx  # Forward navigation button (image + label)
+│   ├── pages/
+│   │   ├── _app.js          # Global style imports
+│   │   ├── _document.js     # HTML document shell
+│   │   ├── index.js         # Landing page — "Sophisticated Skincare"
+│   │   ├── testing.jsx      # Step 1: name + location questionnaire
+│   │   ├── analysis.jsx     # Step 2: choose camera or gallery
+│   │   ├── camera.jsx       # Step 3a: live webcam capture
+│   │   ├── select.jsx       # Step 3b: analysis category selection hub
+│   │   ├── demographics.jsx # Step 4: review AI-predicted demographics
+│   │   └── api/
+│   │       └── hello.js     # Unused starter API route
+│   └── styles/
+│       ├── globals.css      # Tailwind directives + Roobert font-face
+│       └── animations.css   # Spinning diamond keyframe classes
+├── next.config.mjs
+├── tailwind.config.js
+└── jsconfig.json            # Path alias: @/* → src/*
+```
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Install & Run
 
 ```bash
+git clone <repo-url>
+cd my-next-app
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### Other Commands
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```bash
+npm run build   # Production build
+npm run start   # Serve production build
+npm run lint    # Run ESLint
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
 
-## Learn More
+This project has no `.env` variables — all external API endpoints are hardcoded directly in the source. The two Google Cloud Functions URLs used are:
 
-To learn more about Next.js, take a look at the following resources:
+| Endpoint | Used In | Purpose |
+|----------|---------|---------|
+| `https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseOne` | `testing.jsx` | Submits user name + location |
+| `https://us-central1-api-skinstric-ai.cloudfunctions.net/skinstricPhaseTwo` | `analysis.jsx`, `camera.jsx` | Submits base64 image for AI analysis |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture / How It Works
 
-## Deploy on Vercel
+![Demographics](./screenshots/demographics.png)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Intro (`/`)** — Static landing page. The "DISCOVER A.I." button is intentionally disabled (`cursor-not-allowed`); only "TAKE TEST" is active.
+2. **Testing (`/testing`)** — Two-question form (name → location). On submission, POSTs to `skinstricPhaseOne` and saves the answers to `localStorage`, then navigates to `/analysis`.
+3. **Analysis (`/analysis`)** — User picks camera or gallery. Gallery upload base64-encodes the image, calls `skinstricPhaseTwo`, stores the JSON response in `sessionStorage`, and routes to `/select`. Camera access is permission-gated and routes to `/camera`.
+4. **Camera (`/camera`)** — Live `<video>` feed via `getUserMedia`. On capture, a `<canvas>` draws the frame, encodes it to PNG base64, and the same `skinstricPhaseTwo` flow runs.
+5. **Select (`/select`)** — Diamond-grid navigation hub. Only the DEMOGRAPHICS tile is wired up; the others (`COSMETIC CONCERNS`, `SKIN TYPE DETAILS`, `WEATHER`) are placeholder stubs.
+6. **Demographics (`/demographics`)** — Reads `demographicData` from `sessionStorage`. Displays AI confidence scores for race, age, and gender as interactive lists with an SVG donut chart. User can override selections, then confirm.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Cross-page state travels via browser storage (`localStorage` for the user profile, `sessionStorage` for analysis results) — no state management library is used.
+
+---
+
+## Live Demo
+
+No deployed URL was found in the project configuration.
+
+---
+
+## License & Contact
+
+This project is private (`"private": true` in `package.json`). No license file is included.
