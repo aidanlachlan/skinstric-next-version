@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import Header from "../components/Header";
 import LeftButton from "../components/LeftButton";
@@ -13,6 +13,14 @@ const Testing = () => {
   const [placeholder, setPlaceholder] = useState(questions[0]);
   const [inputValue, setInputValue] = useState("");
   const [answers, setAnswers] = useState({ name: "", location: "" });
+  const [inputWidth, setInputWidth] = useState("auto");
+  const sizerRef = useRef(null);
+
+  useEffect(() => {
+    if (sizerRef.current) {
+      setInputWidth(sizerRef.current.offsetWidth + 2 + "px");
+    }
+  }, [inputValue, placeholder]);
 
   const handleFocus = () => {
     setCaption(placeholder);
@@ -77,6 +85,19 @@ const Testing = () => {
           <div className="caption mb-4 text-[16px] text-gray-500">
             {caption.toUpperCase()}
           </div>
+          <span
+            ref={sizerRef}
+            aria-hidden
+            style={{
+              position: "absolute",
+              visibility: "hidden",
+              whiteSpace: "pre",
+              fontSize: "40px",
+              fontFamily: "Roobert TRIAL, sans-serif",
+            }}
+          >
+            {questions[currentQuestionIndex]}
+          </span>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
@@ -86,12 +107,7 @@ const Testing = () => {
               onFocus={handleFocus}
               onBlur={handleBlur}
               className="py-2 border-b border-black text-center text-[40px] text-black placeholder:text-black bg-transparent outline-none focus:ring-0 mb-[48px] max-md:text-[28px] max-md:placeholder:text-[28px]"
-              style={{
-                display: "inline-block",
-                width: "auto",
-                minWidth: "1ch",
-              }}
-              size={18}
+              style={{ width: inputWidth, minWidth: "1ch" }}
             />
           </form>
         </div>
